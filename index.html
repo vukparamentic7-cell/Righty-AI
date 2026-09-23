@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Righty-AI - Tvoj pametni asistenti</title>
+    <title>Righty AI - Tvoj pametni asistent</title>
     <style>
         * {
             box-sizing: border-box;
@@ -100,15 +100,15 @@
 </head>
 <body>
 
-    <header>Righty-AI 🤖</header>
+    <header>Righty AI 🤖</header>
 
     <div id="chat-container">
-        <div class="message ai-message">Zdravo! Ja sam Righty-AI, tvoj virtuelni asistent. Pitaj me šta god želiš na bilo kom jeziku!</div>
+        <div class="message ai-message">Zdravo! Ja sam Righty AI, tvoj virtuelni asistent. Pitaj me šta god želiš na bilo kom jeziku!</div>
     </div>
 
     <div id="input-container">
         <div id="input-box">
-            <textarea id="user-input" placeholder="Napiši poruku... (npr. Na kom jeziku želiš da razgovaramo?)" rows="1"></textarea>
+            <textarea id="user-input" placeholder="Napiši poruku..." rows="1"></textarea>
             <button id="send-btn" onclick="sendMessage()">Pošalji</button>
         </div>
     </div>
@@ -117,7 +117,6 @@
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
 
-        // Podrška za slanje na Enter
         userInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -129,13 +128,11 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Prikaz korisnikove poruke
             appendMessage(text, 'user-message');
             userInput.value = '';
 
-            // Simulacija odgovora AI-ja (Ovde kasnije ubacuješ pravu API konekciju)
             setTimeout(() => {
-                const aiResponse = `Razumeo sam tvoju poruku: "${text}". Pošto radim na svim jezicima, mogu ti pomoći sa prevodom, pisanjem koda, objašnjenjem pojmova ili bilo čim drugim!`;
+                const aiResponse = `Razumeo sam tvoju poruku: "${text}". Pošto radim na svim jezicima, spreman sam da ti pomognem!`;
                 appendMessage(aiResponse, 'ai-message');
             }, 600);
         }
