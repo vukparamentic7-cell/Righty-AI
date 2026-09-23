@@ -25,6 +25,7 @@
             font-size: 1.5rem;
             font-weight: bold;
             border-bottom: 1px solid #334155;
+            letter-spacing: 0.5px;
         }
         #chat-container {
             flex: 1;
@@ -38,12 +39,13 @@
             margin: 0 auto;
         }
         .message {
-            padding: 12px 18px;
+            padding: 14px 18px;
             border-radius: 12px;
-            max-width: 75%;
-            line-height: 1.5;
+            max-width: 80%;
+            line-height: 1.6;
             word-wrap: break-word;
             white-space: pre-wrap;
+            font-size: 0.95rem;
         }
         .user-message {
             background-color: #3b82f6;
@@ -52,10 +54,11 @@
             border-bottom-right-radius: 2px;
         }
         .ai-message {
-            background-color: #334155;
+            background-color: #1e293b;
             color: #f8fafc;
             align-self: flex-start;
             border-bottom-left-radius: 2px;
+            border: 1px solid #334155;
         }
         #input-container {
             background-color: #1e293b;
@@ -80,6 +83,7 @@
             resize: none;
             height: 50px;
             outline: none;
+            font-size: 0.95rem;
         }
         textarea:focus {
             border-color: #3b82f6;
@@ -89,7 +93,7 @@
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 0 20px;
+            padding: 0 24px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s;
@@ -104,7 +108,7 @@
     <header>Righty AI 🤖</header>
 
     <div id="chat-container">
-        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Ask me anything in English, Serbian, or any language you want!</div>
+        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Ask me anything in English, Serbian, Russian, or any language you want, and I will answer accurately!</div>
     </div>
 
     <div id="input-container">
@@ -143,7 +147,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{
-                            parts: [{ text: "Ti si Righty AI, pametan i koristan asistent. Korisnik ti piše. Odgovori TAČNO i precizno na onom jeziku na kom ti je postavio pitanje (ako je srpski, odgovori na srpskom, ako je engleski, na engleskom, ruski na ruskom, itd.). Pitanje korisnika je: " + text }]
+                            parts: [{ text: "Ti si Righty AI, izuzetno pametan, tačan i koristan veštački inteligentni asistent. Korisnik ti se obratio. Odgovori TAČNO, detaljno i precizno na onom jeziku na kom ti je postavio pitanje (ako je srpski, odgovori na srpskom, ako je engleski na engleskom, ruski na ruskom, itd.). Pitanje korisnika je: " + text }]
                         }]
                     })
                 });
@@ -153,12 +157,14 @@
                 if (data.candidates && data.candidates[0].content) {
                     const aiReply = data.candidates[0].content.parts[0].text;
                     loadingId.textContent = aiReply;
+                } else if (data.error) {
+                    loadingId.textContent = "API Greška: " + data.error.message;
                 } else {
                     loadingId.textContent = "Oops! Proveri da li ti je API ključ tačan.";
                 }
 
             } catch (error) {
-                loadingId.textContent = "Oops! Something went wrong with the network or API key.";
+                loadingId.textContent = "Oops! Network error or invalid API key.";
             }
 
             chatContainer.scrollTop = chatContainer.scrollHeight;
