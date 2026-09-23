@@ -115,7 +115,7 @@
     </div>
 
     <script>
-        // OVDE UPIŠI SVOJ GEMINI API KLJUČ IZMEĐU NAVODNIKA
+        // OVDJE UMESTO TEKSTA UBACO SVOJ PRAVI GEMINI API KLJUČ IZMEĐU NAVODNIKA
         const API_KEY = "UBACI_SVOJ_API_KLJUC_OVDE"; 
 
         const chatContainer = document.getElementById('chat-container');
@@ -149,12 +149,16 @@
                 });
 
                 const data = await response.json();
-                const aiReply = data.candidates[0].content.parts[0].text;
-
-                loadingId.textContent = aiReply;
+                
+                if (data.candidates && data.candidates[0].content) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    loadingId.textContent = aiReply;
+                } else {
+                    loadingId.textContent = "Oops! Proveri da li ti je API ključ tačan.";
+                }
 
             } catch (error) {
-                loadingId.textContent = "Oops! Make sure you replaced 'UBACI_SVOJ_API_KLJUC_OVDE' with your real Gemini API key.";
+                loadingId.textContent = "Oops! Something went wrong with the network or API key.";
             }
 
             chatContainer.scrollTop = chatContainer.scrollHeight;
