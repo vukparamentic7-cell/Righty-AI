@@ -115,7 +115,7 @@
     </div>
 
     <script>
-        // OVDJE UNESI SVOJ GEMINI API KLJUČ (besplatno ga dobijaš na Google AI Studio)
+        // OVDE UPIŠI SVOJ GEMINI API KLJUČ IZMEĐU NAVODNIKA
         const API_KEY = "UBACI_SVOJ_API_KLJUC_OVDE"; 
 
         const chatContainer = document.getElementById('chat-container');
@@ -135,7 +135,6 @@
             appendMessage(text, 'user-message');
             userInput.value = '';
 
-            // Pokazivač da AI razmišlja
             const loadingId = appendMessage("Righty AI is thinking...", 'ai-message');
 
             try {
@@ -144,7 +143,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{
-                            parts: [{ text: "Ti si Righty AI, pametan i koristan asistent. Korisnik ti piše. Odgovori TAČNO i precizno na onom jeziku na kom ti je postavio pitanje (ako je srpski, odgovori na srpskom, ako je engleski, na engleskom, itd.). Pitanje korisnika je: " + text }]
+                            parts: [{ text: "Ti si Righty AI, pametan i koristan asistent. Korisnik ti piše. Odgovori TAČNO i precizno na onom jeziku na kom ti je postavio pitanje (ako je srpski, odgovori na srpskom, ako je engleski, na engleskom, ruski na ruskom, itd.). Pitanje korisnika je: " + text }]
                         }]
                     })
                 });
@@ -152,11 +151,10 @@
                 const data = await response.json();
                 const aiReply = data.candidates[0].content.parts[0].text;
 
-                // Ukloni "Thinking..." i ubaci pravi odgovor
                 loadingId.textContent = aiReply;
 
             } catch (error) {
-                loadingId.textContent = "Oops! Something went wrong. Make sure you added your Gemini API key correctly.";
+                loadingId.textContent = "Oops! Make sure you replaced 'UBACI_SVOJ_API_KLJUC_OVDE' with your real Gemini API key.";
             }
 
             chatContainer.scrollTop = chatContainer.scrollHeight;
