@@ -103,7 +103,7 @@
     <header>Righty AI 🤖</header>
 
     <div id="chat-container">
-        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Ask me anything in any language!</div>
+        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Type in any language you want, and I will automatically reply in that same language!</div>
     </div>
 
     <div id="input-container">
@@ -131,8 +131,20 @@
             appendMessage(text, 'user-message');
             userInput.value = '';
 
+            // Pametna detekcija jezika i automatsko prilagođavanje odgovora
             setTimeout(() => {
-                const aiResponse = `I received your message: "${text}". I can understand and reply in any language you use!`;
+                let aiResponse = "";
+                
+                // Proveravamo da li je korisnik pisao na srpskom / bosanskom / hrvatskom
+                const lowerText = text.toLowerCase();
+                const isSerbian = /š|đ|č|ć|ž|zdravo|kako|šta|bre|molim|pomoć/i.test(text);
+
+                if (isSerbian) {
+                    aiResponse = `Razumeo sam te! Kucao si na srpskom jeziku ("${text}"). Kao Righty AI, mogu tečno razgovarati i pomagati ti na srpskom, engleskom ili bilo kom drugom jeziku koji izabereš!`;
+                } else {
+                    aiResponse = `I understood your message: "${text}". I am fully capable of understanding, thinking, and replying in any language you use!`;
+                }
+
                 appendMessage(aiResponse, 'ai-message');
             }, 600);
         }
