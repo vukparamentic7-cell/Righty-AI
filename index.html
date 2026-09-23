@@ -103,7 +103,7 @@
     <header>Righty AI 🤖</header>
 
     <div id="chat-container">
-        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Type in any language you want, and I will automatically reply in that same language!</div>
+        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Type in English, or switch to Serbian whenever you like!</div>
     </div>
 
     <div id="input-container">
@@ -131,18 +131,17 @@
             appendMessage(text, 'user-message');
             userInput.value = '';
 
-            // Pametna detekcija jezika i automatsko prilagođavanje odgovora
             setTimeout(() => {
                 let aiResponse = "";
-                
-                // Proveravamo da li je korisnik pisao na srpskom / bosanskom / hrvatskom
                 const lowerText = text.toLowerCase();
-                const isSerbian = /š|đ|č|ć|ž|zdravo|kako|šta|bre|molim|pomoć/i.test(text);
+                
+                // Proširena lista reči i srpskih nastavaka/karaktera da bolje prepozna srpski jezik
+                const isSerbian = /(š|đ|č|ć|ž|kako|sta|šta|dobro|bre|molim|pomoć|pomoc|zasto|zašto|ime|ti|ja|sam|si|je|smo|ste|su|govoris|govorite|srpskom|srpski|odgovori|pozdrav|cao|zdravo|hvala|reci|mozes|možeš)/i.test(lowerText);
 
                 if (isSerbian) {
-                    aiResponse = `Razumeo sam te! Kucao si na srpskom jeziku ("${text}"). Kao Righty AI, mogu tečno razgovarati i pomagati ti na srpskom, engleskom ili bilo kom drugom jeziku koji izabereš!`;
+                    aiResponse = `Razumeo sam te! Vidim da si prešao na srpski jezik ("${text}"). Od sada ti odgovaram na srpskom, a interfejs ostaje na engleskom kako si tražio!`;
                 } else {
-                    aiResponse = `I understood your message: "${text}". I am fully capable of understanding, thinking, and replying in any language you use!`;
+                    aiResponse = `I received your message: "${text}". I'm ready to help you in English, or switch back to Serbian if you type in Serbian!`;
                 }
 
                 appendMessage(aiResponse, 'ai-message');
