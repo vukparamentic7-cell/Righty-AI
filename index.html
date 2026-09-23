@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Righty AI - Tvoj pametni asistent</title>
+    <title>Righty AI - Your Smart Assistant</title>
     <style>
         * {
             box-sizing: border-box;
@@ -103,13 +103,13 @@
     <header>Righty AI 🤖</header>
 
     <div id="chat-container">
-        <div class="message ai-message">Zdravo! Ja sam Righty AI, tvoj virtuelni asistent. Pitaj me šta god želiš na bilo kom jeziku!</div>
+        <div class="message ai-message">Hello! I am Righty AI, your smart assistant. Ask me anything in any language!</div>
     </div>
 
     <div id="input-container">
         <div id="input-box">
-            <textarea id="user-input" placeholder="Napiši poruku..." rows="1"></textarea>
-            <button id="send-btn" onclick="sendMessage()">Pošalji</button>
+            <textarea id="user-input" placeholder="Type your message here..." rows="1"></textarea>
+            <button id="send-btn" onclick="sendMessage()">Send</button>
         </div>
     </div>
 
@@ -132,7 +132,7 @@
             userInput.value = '';
 
             setTimeout(() => {
-                const aiResponse = `Razumeo sam tvoju poruku: "${text}". Pošto radim na svim jezicima, spreman sam da ti pomognem!`;
+                const aiResponse = `I received your message: "${text}". I can understand and reply in any language you use!`;
                 appendMessage(aiResponse, 'ai-message');
             }, 600);
         }
