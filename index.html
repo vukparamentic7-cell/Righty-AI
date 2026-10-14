@@ -21,7 +21,7 @@
 <body>
     <header>Righty AI 🤖</header>
     <div id="chat-container">
-        <div class="message ai-message">Hello! I am Righty AI. Ask me anything!</div>
+        <div class="message ai-message">Hello! I am Righty AI. Ask me anything in any language! / Pitaj me šta god želiš na bilo kom jeziku!</div>
     </div>
     <div id="input-container">
         <div id="input-box">
@@ -43,13 +43,21 @@
             const loadingMsg = appendMessage("Righty AI is thinking...", 'ai-message');
 
             try {
-                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(text)}`);
-                const data = await response.text();
+                // Šaljemo upit sa instrukcijom da odgovori na jeziku na kom je pitanje postavio korisnik
+                const prompt = `Answer in the exact same language as this question: "${text}"`;
+                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+                let data = await response.text();
                 
-                if (data) {
-                    loadingMsg.textContent = data;
+                // Ako vrati prazno ili samo zagrade {}, proveravamo direktan tekst
+                if (!data || data.trim() === "{}" || data.trim() === "{}") {
+                    const fallbackResponse = await fetch(`https://text.pollinations.ai/${encodeURIComponent(text)}`);
+                    data = await fallbackResponse.text();
+                }
+
+                if (!data || data.trim() === "{}") {
+                    loadingMsg.textContent = "Trenutno nemam odgovor na ovo. Probaj ponovo!";
                 } else {
-                    loadingMsg.textContent = "Greška: Nema odgovora.";
+                    loadingMsg.textContent = data;
                 }
             } catch (error) {
                 loadingMsg.textContent = "Mrežna greška: " + error.message;
