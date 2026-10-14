@@ -3,95 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Righty AI - Your Smart Assistant</title>
+    <title>Righty AI - Advanced Smart Assistant</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; height: 100vh; animation: fadeInBody 0.6s ease-out; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            animation: fadeInBody 0.6s ease-out;
+        }
+
         @keyframes fadeInBody {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        header { background-color: #1e293b; padding: 20px; text-align: center; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #334155; }
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; max-width: 800px; width: 100%; margin: 0 auto; }
-        
-        .message { 
-            padding: 14px 18px; 
-            border-radius: 12px; 
-            max-width: 80%; 
-            line-height: 1.6; 
-            word-wrap: break-word; 
+        header {
+            background-color: #1e293b;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+        .clear-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .clear-btn:hover {
+            background-color: #dc2626;
+        }
+
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            padding: 16px 20px;
+            border-radius: 14px;
+            max-width: 75%;
+            line-height: 1.6;
+            word-wrap: break-word;
             white-space: pre-wrap;
             animation: slideUp 0.3s ease-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .user-message { background-color: #3b82f6; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .ai-message { background-color: #1e293b; color: #f8fafc; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #334155; }
-        #input-container { background-color: #1e293b; padding: 20px; display: flex; justify-content: center; border-top: 1px solid #334155; }
-        #input-box { max-width: 800px; width: 100%; display: flex; gap: 10px; }
-        textarea { flex: 1; background-color: #0f172a; color: #f8fafc; border: 1px solid #334155; border-radius: 8px; padding: 12px; resize: none; height: 50px; outline: none; }
-        button { background-color: #3b82f6; color: white; border: none; border-radius: 8px; padding: 0 20px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
-        button:hover { background-color: #2563eb; }
+        .user-message {
+            background-color: #3b82f6;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 3px;
+        }
+
+        .ai-message {
+            background-color: #1e293b;
+            color: #f8fafc;
+            align-self: flex-start;
+            border-bottom-left-radius: 3px;
+            border: 1px solid #334155;
+        }
+
+        #input-container {
+            background-color: #1e293b;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid #334155;
+        }
+
+        #input-box {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        textarea {
+            flex: 1;
+            background-color: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 14px;
+            resize: none;
+            height: 55px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #3b82f6;
+        }
+
+        button.send-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 25px;
+            height: 55px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button.send-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .footer-info {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+            padding: 8px;
+            background-color: #0f172a;
+        }
     </style>
 </head>
 <body>
-    <header>Righty AI 🤖</header>
+
+    <header>
+        <div style="width: 70px;"></div>
+        <div class="header-title">
+            <span>Righty AI 🤖</span>
+        </div>
+        <button class="clear-btn" id="clear-btn" title="Clear Chat History">Clear Chat</button>
+    </header>
+
     <div id="chat-container">
-        <!-- Početni pozdrav uvek na engleskom -->
         <div class="message ai-message">Hello! I am Righty AI. Ask me anything!</div>
     </div>
+
     <div id="input-container">
         <div id="input-box">
-            <textarea id="user-input" placeholder="Type your message here..."></textarea>
-            <button id="send-btn">Send</button>
+            <textarea id="user-input" placeholder="Type your message here... (Press Enter to send)"></textarea>
+            <button class="send-btn" id="send-btn">Send</button>
         </div>
     </div>
+
+    <div class="footer-info">
+        Righty AI Engine &bull; Developed with HTML, CSS & JavaScript
+    </div>
+
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const clearBtn = document.getElementById('clear-btn');
 
+        // Funkcija za slanje poruke API servisu
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
             appendMessage(text, 'user-message');
             userInput.value = '';
+            
             const loadingMsg = appendMessage("Righty AI is thinking...", 'ai-message');
 
             try {
-                // Govorimo AI-ju da prepozna jezik i odgovori na istom jeziku
-                const fullQuery = `Detect the language of this message and reply in that same language: "${text}"`;
+                // Instrukcija da automatski detektuje jezik i odgovori na istom jeziku
+                const fullQuery = `Detect the language of this text and reply strictly in that same language: "${text}"`;
                 const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(fullQuery)}`);
                 let data = await response.text();
                 
                 if (!data || data.trim() === "{}" || data.trim() === "") {
-                    loadingMsg.textContent = "I am ready to help you! What would you like to know?";
+                    loadingMsg.textContent = "I am ready to help you with anything you need!";
                 } else {
                     loadingMsg.textContent = data;
                 }
             } catch (error) {
-                loadingMsg.textContent = "Network error: " + error.message;
+                loadingMsg.textContent = "Network error occurred: " + error.message;
             }
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            scrollToBottom();
         }
 
+        // Funkcija za dodavanje poruke u DOM
         function appendMessage(text, className) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${className}`;
             msgDiv.textContent = text;
             chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            scrollToBottom();
             return msgDiv;
         }
 
+        // Funkcija za automatsko skrolovanje na dno chata
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Funkcija za brisanje istorije i vraćanje početnog pozdrava
+        function clearChat() {
+            chatContainer.innerHTML = '';
+            appendMessage("Hello! I am Righty AI. Ask me anything!", 'ai-message');
+        }
+
+        // Event listeneri
         sendBtn.addEventListener('click', sendMessage);
+        
+        clearBtn.addEventListener('click', clearChat);
+
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
