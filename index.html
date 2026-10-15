@@ -83,29 +83,37 @@
     </div>
 
     <script>
-        // 1. REPLACE WITH YOUR SUPABASE PROJECT CREDENTIALS
-        const SUPABASE_URL = 'https://your-project-url.supabase.co';
-        const SUPABASE_ANON_KEY = 'your-anon-public-key-here';
+        // 1. ZAMENI OVO SA SVOJIM PRAVIM SUPABASE PODACIMA (URL i Anon Key)
+        const SUPABASE_URL = 'https://tvoj-pravi-url.supabase.co';
+        const SUPABASE_ANON_KEY = 'tvoj-pravi-anon-kljuc';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 2. ENTER YOUR UNIQUE USER ID (UUID) AFTER YOU REGISTER AS THE FIRST USER
-        const MY_ADMIN_USER_ID = "put_your_supabase_user_uuid_here";
+        // 2. UNESI SVOJ USER UUID IZ BAZE
+        const MY_ADMIN_USER_ID = "tvoj-admin-uuid-iz-baze";
 
         let currentUser = null;
 
-        // Check if user is already logged in on page load
         window.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                validateAndSetUser(session.user);
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    validateAndSetUser(session.user);
+                }
+            } catch (err) {
+                console.error("Session check error:", err);
             }
         });
 
-        // REGISTRATION
         async function signUp() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
             const status = document.getElementById('auth-status');
+
+            if (!email || !password) {
+                status.style.color = '#ef4444';
+                status.innerText = "Please enter both email and password.";
+                return;
+            }
 
             const { data, error } = await supabase.auth.signUp({ email, password });
             if (error) {
@@ -117,5 +125,6 @@
             }
         }
 
-        // SIGN IN
         async function signIn() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password =
