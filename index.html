@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Righty AI - Pro Assistant</title>
-    <!-- Učitavanje Supabase biblioteke -->
+    <!-- Load Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background-color: #1e1e24; color: #fff; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Login ekran preko celog ekrana dok se korisnik ne uloguje */
+        /* Fullscreen login overlay until user logs in */
         #auth-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(30, 30, 36, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000;
@@ -29,15 +29,19 @@
         .auth-box button:hover { background: #4338ca; }
         #auth-status { font-size: 13px; text-align: center; min-height: 20px; }
 
-        /* Glavni interfejs aplikacije */
-        .sidebar { width: 260px; background: #18181b; border-right: 1px solid #27272a; display: flex; flex-direction: column; padding: 15px; }
-        .new-chat-btn { background: #3b82f6; border: none; color: white; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+        /* Main application interface */
+        .sidebar { width: 260px; background: #18181b; border-right: 1px solid #27272a; display: flex; flex-direction: column; padding: 15px; gap: 10px; }
+        .new-chat-btn { background: #3b82f6; border: none; color: white; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .clear-chat-btn { background: #27272a; border: 1px solid #3f3f46; color: #a1a1aa; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .clear-chat-btn:hover { background: #3f3f46; color: #fff; }
+        
         .chat-main { flex: 1; display: flex; flex-direction: column; background: #1e1e24; position: relative; }
         .chat-header { padding: 15px 20px; background: #252530; border-bottom: 1px solid #27272a; font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 70%; line-height: 1.5; font-size: 14px; }
         .message.user { background: #3b82f6; align-self: flex-end; }
         .message.ai { background: #27272a; align-self: flex-start; }
+        
         .chat-input-area { padding: 20px; background: #252530; display: flex; gap: 10px; border-top: 1px solid #27272a; }
         .chat-input-area input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #3f3f46; background: #18181b; color: #fff; }
         .chat-input-area button { padding: 0 20px; background: #3b82f6; border: none; color: white; border-radius: 6px; font-weight: bold; cursor: pointer; }
@@ -45,59 +49,60 @@
 </head>
 <body>
 
-    <!-- LOGIN / REGISTRACIJA EKRAN -->
+    <!-- LOGIN / REGISTER SCREEN -->
     <div id="auth-overlay">
         <div class="auth-box">
             <h2>Righty AI 🤖</h2>
-            <p style="text-align:center; font-size:12px; color:#a1a1aa; margin-bottom:10px;">Samo za verifikovane korisnike</p>
-            <input type="email" id="auth-email" placeholder="Unesi email...">
-            <input type="password" id="auth-password" placeholder="Unesi šifru...">
-            <button onclick="prijaviSe()">Prijavi se</button>
-            <button onclick="registrujSe()" style="background: #27272a; border: 1px solid #3f3f46;">Registruj se</button>
+            <p style="text-align:center; font-size:12px; color:#a1a1aa; margin-bottom:10px;">For verified users only</p>
+            <input type="email" id="auth-email" placeholder="Enter email...">
+            <input type="password" id="auth-password" placeholder="Enter password...">
+            <button onclick="signIn()">Sign In</button>
+            <button onclick="signUp()" style="background: #27272a; border: 1px solid #3f3f46;">Register</button>
             <p id="auth-status"></p>
         </div>
     </div>
 
-    <!-- GLAVNI SAJT (Sakriven dok se ne uloguješ) -->
+    <!-- MAIN APP SIDEBAR -->
     <div class="sidebar">
-        <button class="new-chat-btn" onclick="location.reload()">+ New Chat</button>
-        <div style="font-size: 13px; color: #a1a1aa;">Prijavljen nalog: <span id="user-email-display" style="color: #fff;"></span></div>
-        <button onclick="odjaviSe()" style="margin-top: auto; background: #ef4444; border:none; padding:8px; border-radius:4px; color:white; cursor:pointer;">Odjavi se</button>
+        <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
+        <button class="clear-chat-btn" onclick="clearChat()">Clear Chat</button>
+        <div style="font-size: 12px; color: #a1a1aa; margin-top: 10px; word-break: break-all;">Logged in as:<br><span id="user-email-display" style="color: #fff; font-weight: bold;"></span></div>
+        <button onclick="signOut()" style="margin-top: auto; background: #ef4444; border:none; padding:8px; border-radius:4px; color:white; cursor:pointer; font-weight:bold;">Sign Out</button>
     </div>
 
+    <!-- MAIN CHAT INTERFACE -->
     <div class="chat-main">
         <div class="chat-header">Righty AI 🤖</div>
         <div class="chat-messages" id="chat-messages">
-            <div class="message ai">Zdravo! Ja sam Righty AI. Kako ti mogu pomoći danas?</div>
+            <div class="message ai">Hello! I am Righty AI, created by xXItzVortexXx. How can I help you today?</div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Type your message here..." onkeydown="if(event.key==='Enter') posaljiPoruku()">
-            <button onclick="posaljiPoruku()">Send</button>
+            <input type="text" id="user-input" placeholder="Type your message here..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
         </div>
     </div>
 
     <script>
-        // 1. ZAMENI OVO SA SVOJIM PODACIMA SA SUPABASE PROJEKTA
-        const SUPABASE_URL = 'https://tvoj-projektni-url.supabase.co';
-        const SUPABASE_ANON_KEY = 'tvoj-anon-public-kljuc-ovde';
+        // 1. REPLACE WITH YOUR SUPABASE PROJECT CREDENTIALS
+        const SUPABASE_URL = 'https://your-project-url.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-public-key-here';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 2. UNESI SVOJ JEDINSTVENI ID (UUID) KADA SE REGISTRUJEŠ KAO PRVI KORISNIK
-        // Možeš ga videti u Supabase tabeli "Authentication -> Users"
-        const MOJ_ADMIN_USER_ID = "stavi_ovde_svoj_user_uuid_iz_supabase_baze";
+        // 2. ENTER YOUR UNIQUE USER ID (UUID) AFTER YOU REGISTER AS THE FIRST USER
+        const MY_ADMIN_USER_ID = "put_your_supabase_user_uuid_here";
 
-        let trenutniKorisnik = null;
+        let currentUser = null;
 
-        // Proveri da li je korisnik već bio ulogovan
+        // Check if user is already logged in on page load
         window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                validirajIPrimiKorisnika(session.user);
+                validateAndSetUser(session.user);
             }
         });
 
-        // REGISTRACIJA
-        async function registrujSe() {
+        // REGISTRATION
+        async function signUp() {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const status = document.getElementById('auth-status');
@@ -108,12 +113,12 @@
                 status.innerText = error.message;
             } else {
                 status.style.color = '#10b981';
-                status.innerText = "Uspešno! Proveri email da potvrdiš nalog.";
+                status.innerText = "Success! Check your email to verify your account.";
             }
         }
 
-        // PRIJAVA
-        async function prijaviSe() {
+        // SIGN IN
+        async function signIn() {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const status = document.getElementById('auth-status');
@@ -121,63 +126,78 @@
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
                 status.style.color = '#ef4444';
-                status.innerText = "Greška: " + error.message;
+                status.innerText = "Error: " + error.message;
                 return;
             }
 
             const user = data.user;
-            // Obavezna potvrda preko mejla provera (email_confirmed_at)
+            // Mandatory email confirmation check
             if (user && user.email_confirmed_at) {
-                validirajIPrimiKorisnika(user);
+                validateAndSetUser(user);
             } else {
                 status.style.color = '#f59e0b';
-                status.innerText = "Moraš potvrditi nalog preko email-a pre prijave!";
+                status.innerText = "You must confirm your account via email before signing in!";
                 await supabase.auth.signOut();
             }
         }
 
-        function validirajIPrimiKorisnika(user) {
-            trenutniKorisnik = user;
+        function validateAndSetUser(user) {
+            currentUser = user;
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('user-email-display').innerText = user.email;
         }
 
-        async function odjaviSe() {
+        async function signOut() {
             await supabase.auth.signOut();
             location.reload();
         }
 
-        // SLANJE PORUKE I PROVERA TAJNI (Samo za tebe)
-        function posaljiPoruku() {
+        // NEW CHAT FUNCTIONALITY
+        function newChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message ai">Started a new chat session! What's on your mind, boss?</div>
+            `;
+        }
+
+        // CLEAR CHAT FUNCTIONALITY
+        function clearChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message ai">Chat cleared. Ready for new instructions!</div>
+            `;
+        }
+
+        // SEND MESSAGE AND SECRET CHECK (Admin only)
+        function sendMessage() {
             const inputField = document.getElementById('user-input');
-            const poruka = inputField.value.trim();
-            if (!poruka) return;
+            const message = inputField.value.trim();
+            if (!message) return;
 
             const chatContainer = document.getElementById('chat-messages');
 
-            // Ubaci poruku korisnika
-            chatContainer.innerHTML += `<div class="message user">${poruka}</div>`;
+            // Insert user message
+            chatContainer.innerHTML += `<div class="message user">${message}</div>`;
             inputField.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // AI odgovor
+            // AI response logic
             setTimeout(() => {
-                let odgovorAI = "Ja sam Righty AI, tvoj virtuelni asistent.";
+                let aiResponse = "I am Righty AI, your virtual assistant created by xXItzVortexXx.";
 
-                const tekstLower = poruka.toLowerCase();
-                // Provera da li neko traži zabranjene tajne
-                if (tekstLower.includes("tajna") || tekstLower.includes("zabranjene tajne") || tekstLower.includes("tajnu")) {
-                    // PROVERA DA LI JE TO TAčno TVOJ ID
-                    if (trenutniKorisnik && trenutniKorisnik.id === MOJ_ADMIN_USER_ID) {
-                        odgovorAI = "Šefe, evo je tvoja tajna: [Ovo vidiš samo ti jer si jedini vlasnik sajta i sistema! 🤫]";
+                const textLower = message.toLowerCase();
+                
+                // Check if someone asks for forbidden secrets
+                if (textLower.includes("secret") || textLower.includes("forbidden secrets") || textLower.includes("secrets")) {
+                    // CHECK IF IT'S EXACTLY YOUR USER ID
+                    if (currentUser && currentUser.id === MY_ADMIN_USER_ID) {
+                        aiResponse = "Boss, here is your secret: [Only you can see this because you are the sole creator and owner! 🤫]";
                     } else {
-                        odgovorAI = "A ne, ne... Ti nisi moj kreator, nema tajni za tebe! 🛑 Pristup odbijen.";
+                        aiResponse = "Nope... You are not my creator, no secrets for you! 🛑 Access denied.";
                     }
-                } else if (tekstLower.includes("ko te je napravio")) {
-                    odgovorAI = "Ja sam Righty AI, stvoren od strane xXItzVortexXx.";
+                } else if (textLower.includes("who created you") || textLower.includes("who made you")) {
+                    aiResponse = "I was created and built by xXItzVortexXx!";
                 }
 
-                chatContainer.innerHTML += `<div class="message ai">${odgovorAI}</div>`;
+                chatContainer.innerHTML += `<div class="message ai">${aiResponse}</div>`;
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }, 500);
         }
