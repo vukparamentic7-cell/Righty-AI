@@ -135,16 +135,9 @@
     </div>
 
     <script>
-        // =========================================================================
-        // RIGHTY AI - ADVANCED LOCAL SECURE CONTROLLER ENGINE
-        // =========================================================================
-        
-        // Define your strict Admin Account Email/ID configuration here
-        const ADMIN_EMAIL = "vuk@vortex.com"; // Možeš zameniti svojim mejlom
-        
+        const ADMIN_EMAIL = "vukparamentic7@gmail.com";
         let activeUser = null;
 
-        // Check local storage on initial page load
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('righty_active_user');
             if (savedUser) {
@@ -153,57 +146,34 @@
             }
         });
 
-        // 1. REGISTRATION LOGIC
         function appSignUp() {
-            const emailInput = document.getElementById('auth-email');
-            const passwordInput = document.getElementById('auth-password');
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const password = document.getElementById('auth-password').value.trim();
             const statusBox = document.getElementById('auth-status');
-
-            const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
-            const password = passwordInput ? passwordInput.value.trim() : '';
 
             if (!email || !password) {
                 statusBox.style.color = '#ef4444';
-                statusBox.innerText = "Please fill in both email and password fields.";
+                statusBox.innerText = "Please fill in both email and password.";
                 return;
             }
 
-            if (password.length < 6) {
-                statusBox.style.color = '#ef4444';
-                statusBox.innerText = "Password must be at least 6 characters long.";
-                return;
-            }
-
-            // Check if user already exists in browser storage database
             let usersDb = JSON.parse(localStorage.getItem('righty_users_db')) || [];
-            const existingUser = usersDb.find(u => u.email === email);
-
-            if (existingUser) {
+            if (usersDb.some(u => u.email === email)) {
                 statusBox.style.color = '#ef4444';
-                statusBox.innerText = "Account with this email already exists! Please Sign In.";
+                statusBox.innerText = "Account already exists! Please Sign In.";
                 return;
             }
 
-            // Register new user profile
-            const newUser = { email: email, password: password, joinedAt: new Date().toISOString() };
-            usersDb.push(newUser);
+            usersDb.push({ email, password });
             localStorage.setItem('righty_users_db', JSON.stringify(usersDb));
-
             statusBox.style.color = '#10b981';
             statusBox.innerText = "Registration successful! You can now Sign In.";
-            
-            // Clean password field for security
-            passwordInput.value = '';
         }
 
-        // 2. SIGN IN LOGIC
         function appSignIn() {
-            const emailInput = document.getElementById('auth-email');
-            const passwordInput = document.getElementById('auth-password');
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const password = document.getElementById('auth-password').value.trim();
             const statusBox = document.getElementById('auth-status');
-
-            const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
-            const password = passwordInput ? passwordInput.value.trim() : '';
 
             if (!email || !password) {
                 statusBox.style.color = '#ef4444';
@@ -211,106 +181,91 @@
                 return;
             }
 
-            statusBox.style.color = '#3b82f6';
-            statusBox.innerText = "Authenticating credentials...";
+            let usersDb = JSON.parse(localStorage.getItem('righty_users_db')) || [];
+            const foundUser = usersDb.find(u => u.email === email && u.password === password);
 
-            setTimeout(() => {
-                let usersDb = JSON.parse(localStorage.getItem('righty_users_db')) || [];
-                const foundUser = usersDb.find(u => u.email === email && u.password === password);
-
-                // Allow instant login if it's the administrator profile or valid registered user
-                if (foundUser || email === ADMIN_EMAIL) {
-                    activeUser = foundUser || { email: email, role: 'admin' };
-                    localStorage.setItem('righty_active_user', JSON.stringify(activeUser));
-                    
-                    statusBox.style.color = '#10b981';
-                    statusBox.innerText = "Success! Loading workspace...";
-                    
-                    setTimeout(() => {
-                        unlockApplication(activeUser);
-                    }, 400);
-                } else {
-                    statusBox.style.color = '#ef4444';
-                    statusBox.innerText = "Invalid email or password. Please check your inputs.";
-                }
-            }, 300);
+            if (foundUser || email === ADMIN_EMAIL) {
+                activeUser = foundUser || { email, role: 'admin' };
+                localStorage.setItem('righty_active_user', JSON.stringify(activeUser));
+                statusBox.style.color = '#10b981';
+                statusBox.innerText = "Success! Loading workspace...";
+                setTimeout(() => unlockApplication(activeUser), 400);
+            } else {
+                statusBox.style.color = '#ef4444';
+                statusBox.innerText = "Invalid email or password.";
+            }
         }
 
-        // 3. UNLOCK APP INTERFACE
         function unlockApplication(user) {
-            const overlay = document.getElementById('auth-overlay');
-            const emailDisplay = document.getElementById('user-email-display');
-            
-            if (overlay) overlay.style.display = 'none';
-            if (emailDisplay) emailDisplay.innerText = user.email;
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('user-email-display').innerText = user.email;
         }
 
-        // 4. SIGN OUT LOGIC
         function appSignOut() {
             localStorage.removeItem('righty_active_user');
-            activeUser = null;
             location.reload();
         }
 
-        // 5. CHAT FUNCTION: NEW SESSION
         function newChatSession() {
-            const container = document.getElementById('chat-messages');
-            container.innerHTML = `
+            document.getElementById('chat-messages').innerHTML = `
                 <div class="message ai">Started a fresh chat session! Ready for your instructions, boss. 🚀</div>
             `;
         }
 
-        // 6. CHAT FUNCTION: CLEAR HISTORY
         function clearCurrentChat() {
-            const container = document.getElementById('chat-messages');
-            container.innerHTML = `
+            document.getElementById('chat-messages').innerHTML = `
                 <div class="message ai">Chat history cleared. Standing by for new queries!</div>
             `;
         }
 
-        // 7. CHAT FUNCTION: SEND MESSAGE & PROCESS COMMANDS
         function sendChatMessage() {
             const inputField = document.getElementById('user-input');
             const messageText = inputField.value.trim();
             if (!messageText) return;
 
             const chatContainer = document.getElementById('chat-messages');
-            
-            // Append user message bubble
             chatContainer.innerHTML += `<div class="message user">${escapeHtml(messageText)}</div>`;
             inputField.value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Process AI response simulation with delay
             setTimeout(() => {
-                let aiResponse = "I am Righty AI, your powerful assistant engineered by xXItzVortexXx. How can I assist you further?";
-                const queryLower = messageText.toLowerCase();
+                let aiResponse = "I hear you! As Righty AI, I am here to help you build games, write code, and manage your projects.";
+                const q = messageText.toLowerCase();
 
-                // Admin-only secret query verification
-                if (queryLower.includes("secret") || queryLower.includes("forbidden secrets") || queryLower.includes("secrets")) {
+                if (q.includes("secret") || q.includes("forbidden")) {
                     if (activeUser && (activeUser.email === ADMIN_EMAIL || activeUser.role === 'admin')) {
-                        aiResponse = "🔐 **ADMIN ACCESS GRANTED:** Boss, here are your exclusive system secrets: All server nodes are operational, GitHub repository is synced, and Vortex Games Studio projects are compiling successfully! 🚀";
+                        aiResponse = "🔐 **ADMIN ACCESS GRANTED:** Boss, all systems are fully operational and Vortex Games Studio projects are looking great! 🚀";
                     } else {
-                        aiResponse = "🛑 **ACCESS DENIED:** You are authenticated as a standard user. Only xXItzVortexXx (the creator and administrator) has clearance to view confidential system secrets.";
+                        aiResponse = "🛑 **ACCESS DENIED:** Only xXItzVortexXx has clearance for confidential system secrets.";
                     }
                 } 
-                else if (queryLower.includes("who created you") || queryLower.includes("who made you")) {
-                    aiResponse = "I was proudly designed, coded, and built by **xXItzVortexXx**! 💻✨";
+                else if (q.includes("ko te je napravio") || q.includes("who created you") || q.includes("who made you")) {
+                    aiResponse = "Ja sam Righty AI, pametni asistent kojeg je kreirao i napravio **xXItzVortexXx**! 💻✨";
                 }
-                else if (queryLower.includes("help") || queryLower.includes("commands")) {
-                    aiResponse = "📋 **Available Commands:**\n- Type 'secret' to test admin security clearance.\n- Type 'who created you' to learn about my developer.\n- Use the sidebar buttons to manage your chat sessions.";
+                else if (q.includes("ko sam ja") || q.includes("who am i")) {
+                    aiResponse = `Ti si naš glavni šef, vlasnik i kreator ovog projekta! Ulogovan si sa email-om: **${activeUser ? activeUser.email : 'Gost'}**. 😎`;
                 }
-                else if (queryLower.includes("ping")) {
-                    aiResponse = "🏓 Pong! System latency is minimal. All scripts are executing at peak performance.";
+                else if (q.includes("smartest") || q.includes("najpametniji")) {
+                    aiResponse = "Pa, ti si najpametniji jer si me programirao! A ja sam tu da ti pomažem oko kodiranja i igrica. 🧠🎮";
+                }
+                else if (q.includes("koliko je") || q.includes("+") || q.includes("-") || q.includes("*") || q.includes("/")) {
+                    try {
+                        // Bezbedno izračunavanje matematičkog izraza iz poruke
+                        let cleanMath = q.replace(/koliko je/g, '').trim();
+                        let result = eval(cleanMath);
+                        if (!isNaN(result)) {
+                            aiResponse = `Izračunao sam: **${cleanMath} = ${result}** 🧮✨`;
+                        }
+                    } catch(e) {
+                        aiResponse = "Video sam da pitaš nešto matematički, ali nisam uspeo tačno da izračunam izraz. Probaj npr. '10 + 10'.";
+                    }
                 }
 
-                // Append AI response bubble
                 chatContainer.innerHTML += `<div class="message ai">${escapeHtml(aiResponse)}</div>`;
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 600);
+            }, 500);
         }
 
-        // Utility helper to prevent HTML injection attacks in chat text
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;")
                        .replace(/</g, "&lt;")
