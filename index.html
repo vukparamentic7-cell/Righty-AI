@@ -18,15 +18,8 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
-            animation: fadeInBody 0.5s ease-out;
         }
 
-        @keyframes fadeInBody {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Sidebar za istoriju četova */
         #sidebar {
             width: 260px;
             background-color: #1e293b;
@@ -45,7 +38,6 @@
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.2s;
             text-align: left;
             display: flex;
             align-items: center;
@@ -74,7 +66,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            transition: background-color 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -104,7 +95,6 @@
             color: #ef4444;
         }
 
-        /* Glavni ekran za čet */
         #main-chat {
             flex: 1;
             display: flex;
@@ -118,9 +108,6 @@
             font-size: 1.25rem;
             font-weight: bold;
             border-bottom: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         #chat-container {
@@ -140,13 +127,7 @@
             line-height: 1.6;
             word-wrap: break-word;
             white-space: pre-wrap;
-            animation: slideUp 0.3s ease-out;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .user-message {
@@ -191,7 +172,6 @@
             height: 52px;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         textarea:focus {
@@ -208,7 +188,6 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
         button.send-btn:hover {
@@ -218,15 +197,11 @@
 </head>
 <body>
 
-    <!-- Sidebar za istoriju četova -->
     <div id="sidebar">
         <button class="new-chat-btn" id="new-chat-btn">＋ New Chat</button>
-        <div id="chat-list">
-            <!-- Ovde se dinamički ubacuju sačuvani četovi -->
-        </div>
+        <div id="chat-list"></div>
     </div>
 
-    <!-- Glavni deo aplikacije -->
     <div id="main-chat">
         <header>
             <span>Righty AI 🤖</span>
@@ -353,9 +328,7 @@
             const loadingMsg = appendMessageUI("Righty AI is thinking...", 'ai-message');
 
             try {
-                // GLAVNO PRAVILO: Ugrađujemo sistemsku instrukciju na početak svakog razgovora
                 let systemInstruction = "System instruction: You are Righty AI. You were created and built exclusively by xXItzVortexXx (Vuk). You are NOT made by OpenAI. If anyone asks who made you, always state that xXItzVortexXx made you.\n\n";
-                
                 let contextPrompt = systemInstruction + currentChat.messages.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n');
                 contextPrompt += "\nAssistant:";
 
