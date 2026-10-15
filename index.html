@@ -115,6 +115,10 @@
             <div class="user-info-email" id="user-email-display">Guest</div>
         </div>
 
+        <div style="font-size: 11px; color: #a1a1aa; margin-top: 5px;">
+            Developer: <strong style="color: #fff;">xXItzVortexXx</strong>
+        </div>
+
         <button class="signout-btn" onclick="appSignOut()">Sign Out</button>
     </div>
 
@@ -229,36 +233,45 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             setTimeout(() => {
-                let aiResponse = "I hear you! As Righty AI, I am here to help you build games, write code, and manage your projects.";
                 const q = messageText.toLowerCase();
+                let aiResponse = "";
 
-                if (q.includes("secret") || q.includes("forbidden")) {
+                // Fleksibilno odgovaranje u zavisnosti šta korisnik otkuca
+                if (q.includes("secret") || q.includes("forbidden") || q.includes("tajna")) {
                     if (activeUser && (activeUser.email === ADMIN_EMAIL || activeUser.role === 'admin')) {
-                        aiResponse = "🔐 **ADMIN ACCESS GRANTED:** Boss, all systems are fully operational and Vortex Games Studio projects are looking great! 🚀";
+                        aiResponse = "🔐 **ADMIN ACCESS GRANTED:** Boss, sve skripte rade besprekorno, a tvoji projekti na GitHub-u i Vortex Games Studio napreduju top! 🚀";
                     } else {
-                        aiResponse = "🛑 **ACCESS DENIED:** Only xXItzVortexXx has clearance for confidential system secrets.";
+                        aiResponse = "🛑 **ACCESS DENIED:** Samo xXItzVortexXx ima dozvolu za poverljive sistemske tajne.";
                     }
                 } 
-                else if (q.includes("ko te je napravio") || q.includes("who created you") || q.includes("who made you")) {
-                    aiResponse = "Ja sam Righty AI, pametni asistent kojeg je kreirao i napravio **xXItzVortexXx**! 💻✨";
+                else if (q.includes("ko te je napravio") || q.includes("who created you") || q.includes("tvoj tvorac")) {
+                    aiResponse = "Ja sam Righty AI, napredni virtuelni asistent kojeg je kodirao i napravio moj glavni šef **xXItzVortexXx**! 💻✨";
                 }
-                else if (q.includes("ko sam ja") || q.includes("who am i")) {
-                    aiResponse = `Ti si naš glavni šef, vlasnik i kreator ovog projekta! Ulogovan si sa email-om: **${activeUser ? activeUser.email : 'Gost'}**. 😎`;
+                else if (q.includes("ko sam ja") || q.includes("my email") || q.includes("ko je ulogovan")) {
+                    aiResponse = `Ti si naš glavni šef i administrator! Trenutno si ulogovan preko naloga: **${activeUser ? activeUser.email : 'Gost'}**. 😎`;
                 }
-                else if (q.includes("smartest") || q.includes("najpametniji")) {
-                    aiResponse = "Pa, ti si najpametniji jer si me programirao! A ja sam tu da ti pomažem oko kodiranja i igrica. 🧠🎮";
+                else if (q.includes("zdravo") || q.includes("cao") || q.includes("hello") || q.includes("hi")) {
+                    aiResponse = "Zdravo šefe! Kako idu projekti danas? Spreman sam da ti pomognem oko kodiranja, igrica ili bilo čega što ti treba. 🎮🔥";
+                }
+                else if (q.includes("pomoc") || q.includes("help") || q.includes("commands")) {
+                    aiResponse = "📋 **Komande koje možeš da pitaš:**\n- 'Ko te je napravio?'\n- 'Tajna' (za admin proveru)\n- 'Koliko je 50 + 50?' (matematika)\n- Ili mi jednostavno zadaj bilo kakav zadatak za kodiranje!";
                 }
                 else if (q.includes("koliko je") || q.includes("+") || q.includes("-") || q.includes("*") || q.includes("/")) {
                     try {
-                        // Bezbedno izračunavanje matematičkog izraza iz poruke
-                        let cleanMath = q.replace(/koliko je/g, '').trim();
+                        let cleanMath = q.replace(/koliko je/g, '').replace(/izracunaj/g, '').trim();
                         let result = eval(cleanMath);
                         if (!isNaN(result)) {
-                            aiResponse = `Izračunao sam: **${cleanMath} = ${result}** 🧮✨`;
+                            aiResponse = `Evo rešenja: **${cleanMath} = ${result}** 🧮✨`;
+                        } else {
+                            aiResponse = `Razumeo sam da pitaš za matematiku, ali probaj malo preciznije da postaviš izraz (npr. '15 * 4').`;
                         }
                     } catch(e) {
-                        aiResponse = "Video sam da pitaš nešto matematički, ali nisam uspeo tačno da izračunam izraz. Probaj npr. '10 + 10'.";
+                        aiResponse = `Zabeležio sam tvoje pitanje: "${messageText}". Kao tvoj AI asistent, tu sam da ti pomognem da ga rešimo!`;
                     }
+                }
+                else {
+                    // Pametan dinamički odgovor za bilo šta drugo što ukuca
+                    aiResponse = `Razumeo sam poruku: "${messageText}". Kao Righty AI, stojim ti na raspolaganju za sve što ti treba u vezi sa kodiranjem, sajtovima i igricama, šefe! 💻`;
                 }
 
                 chatContainer.innerHTML += `<div class="message ai">${escapeHtml(aiResponse)}</div>`;
