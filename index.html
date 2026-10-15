@@ -168,7 +168,6 @@
 
             const user = data.user;
             if (user) {
-                // Provera verifikacije mejla
                 if (user.email_confirmed_at) {
                     validateAndSetUser(user);
                 } else {
