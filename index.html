@@ -127,4 +127,83 @@
 
         async function signIn() {
             const email = document.getElementById('auth-email').value.trim();
-            const password =
+            const password = document.getElementById('auth-password').value.trim();
+            const status = document.getElementById('auth-status');
+
+            if (!email || !password) {
+                status.style.color = '#ef4444';
+                status.innerText = "Please enter both email and password.";
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                status.style.color = '#ef4444';
+                status.innerText = "Error: " + error.message;
+                return;
+            }
+
+            const user = data.user;
+            if (user && user.email_confirmed_at) {
+                validateAndSetUser(user);
+            } else {
+                status.style.color = '#f59e0b';
+                status.innerText = "You must confirm your account via email before signing in!";
+                await supabase.auth.signOut();
+            }
+        }
+
+        function validateAndSetUser(user) {
+            currentUser = user;
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('user-email-display').innerText = user.email;
+        }
+
+        async function signOut() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        function newChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message ai">Started a new chat session! What's on your mind, boss?</div>
+            `;
+        }
+
+        function clearChat() {
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message ai">Chat cleared. Ready for new instructions!</div>
+            `;
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            const chatContainer = document.getElementById('chat-messages');
+            chatContainer.innerHTML += `<div class="message user">${message}</div>`;
+            inputField.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            setTimeout(() => {
+                let aiResponse = "I am Righty AI, your virtual assistant created by xXItzVortexXx.";
+                const textLower = message.toLowerCase();
+                
+                if (textLower.includes("secret") || textLower.includes("forbidden secrets") || textLower.includes("secrets")) {
+                    if (currentUser && currentUser.id === MY_ADMIN_USER_ID) {
+                        aiResponse = "Boss, here is your secret: [Only you can see this because you are the sole creator and owner! 🤫]";
+                    } else {
+                        aiResponse = "Nope... You are not my creator, no secrets for you! 🛑 Access denied.";
+                    }
+                } else if (textLower.includes("who created you") || textLower.includes("who made you")) {
+                    aiResponse = "I was created and built by xXItzVortexXx!";
+                }
+
+                chatContainer.innerHTML += `<div class="message ai">${aiResponse}</div>`;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
