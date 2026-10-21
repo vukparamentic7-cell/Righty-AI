@@ -195,7 +195,6 @@
     </div>
 
     <script>
-        // Baza znanja sa srpskim i engleskim ključnim rečima
         const massiveKnowledgeBase = [
             {
                 keywords: ["srbija", "beograd", "drzava", "valjevo", "mionica", "serbia", "belgrade"],
@@ -243,4 +242,59 @@
 
         function sendMessage() {
             const inputField = document.getElementById("user-input");
-            const userText = inputField.
+            const userText = inputField.value.trim();
+            if (userText === "") return;
+
+            appendMessage(userText, "user-message");
+            inputField.value = "";
+
+            setTimeout(() => {
+                const botReply = generateSmartResponse(userText);
+                appendMessage(botReply, "bot-message");
+            }, 300);
+        }
+
+        function generateSmartResponse(message) {
+            const cleanMsg = message.toLowerCase();
+
+            if (/\d/.test(cleanMsg) && (/[+\-*/]/.test(cleanMsg) || cleanMsg.includes("plus") || cleanMsg.includes("puta"))) {
+                try {
+                    let calcResult = eval(cleanMsg.replace(/[^0-9+\-*/().]/g, ''));
+                    return `Evo rešenja: **${message} = ${calcResult}** 🧮✨`;
+                } catch (e) {
+                    return "Greška u matematičkom izrazu. Proveri unete vrednosti!";
+                }
+            }
+
+            for (let item of massiveKnowledgeBase) {
+                for (let keyword of item.keywords) {
+                    if (cleanMsg.includes(keyword)) {
+                        return item.reply;
+                    }
+                }
+            }
+
+            return `Razumeo sam poruku: "${message}". Trenutno nemam ubačenu tu specifičnu informaciju u bazi, ali sistem nastavlja da uči i napreduje svakog dana! 💻🚀`;
+        }
+
+        function appendMessage(text, className) {
+            const chatContainer = document.getElementById("chat-container");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerHTML = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function startNewChat() {
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.innerHTML = `<div class="message bot-message">New session started. How can I help you today?</div>`;
+        }
+
+        function clearHistory() {
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.innerHTML = `<div class="message bot-message">Chat history cleared.</div>`;
+        }
+    </script>
+</body>
+</html>
