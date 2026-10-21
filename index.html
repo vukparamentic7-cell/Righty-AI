@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Righty AI - Pro Assistant</title>
     <style>
-        /* ========================================================== */
-        /* STILOVI ZA RIGHTY AI - MODERAN I ČIST DIZAJN (PREKO 100 LINIJA CSS-A) */
-        /* ========================================================== */
         :root {
             --bg-color: #0f172a;
             --chat-bg: #1e293b;
@@ -34,7 +31,6 @@
             overflow: hidden;
         }
 
-        /* Bočna traka (Sidebar) */
         .sidebar {
             width: 280px;
             background-color: var(--chat-bg);
@@ -75,7 +71,6 @@
             padding-top: 15px;
         }
 
-        /* Glavni kontejner za čet */
         .main-container {
             flex: 1;
             display: flex;
@@ -100,7 +95,6 @@
             gap: 15px;
         }
 
-        /* Poruke baloni */
         .message {
             max-width: 75%;
             padding: 12px 16px;
@@ -123,7 +117,6 @@
             border-bottom-right-radius: 2px;
         }
 
-        /* Donji deo za unos teksta */
         .input-container {
             padding: 20px;
             background-color: var(--chat-bg);
@@ -162,7 +155,6 @@
             background-color: var(--accent-hover);
         }
 
-        /* Responsive dizajn za manje ekrane */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -172,7 +164,6 @@
 </head>
 <body>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>🤖 Righty AI Pro</h2>
@@ -186,7 +177,6 @@
         </div>
     </div>
 
-    <!-- MAIN CHAT AREA -->
     <div class="main-container">
         <div class="chat-header">
             💬 Righty AI Workspace
@@ -205,25 +195,22 @@
     </div>
 
     <script>
-        /* ========================================================== */
-        /* MASIVNA BAZA ZNANJA I LOGIKA ZA ODGOVORE (Preko 600 linija skripte) */
-        /* ========================================================== */
-
+        // Baza znanja sa srpskim i engleskim ključnim rečima
         const massiveKnowledgeBase = [
             {
-                keywords: ["srbija", "beograd", "drzava", "valjevo", "mionica"],
-                reply: "Srbija je prelepa zemlja u jugoistočnoj Evropi, a glavni grad joj je Beograd. Poznata je po bogatoj istoriji, kulturi i gostoprimstvu."
+                keywords: ["srbija", "beograd", "drzava", "valjevo", "mionica", "serbia", "belgrade"],
+                reply: "Srbija je zemlja u jugoistočnoj Evropi, a glavni grad joj je Beograd. Poznata je po istoriji, kulturi i gostoprimstvu."
             },
             {
-                keywords: ["minecraft", "server", "geymc", "spigot", "paper"],
-                reply: "Minecraft je vrhunska sandboks igra! Možeš praviti servere preko Spigot-a i Paper-a, a GeyserMC i Floodgate omogućavaju Java i Bedrock cross-play."
+                keywords: ["minecraft", "server", "geymc", "spigot", "paper", "minecart"],
+                reply: "Minecraft je sandboks igra! Standardni minecart u Minecraft-u ide brzinom do 8 m/s po običnim šinama, ali sa powered šinama može ići mnogo brže!"
             },
             {
-                keywords: ["programiranje", "kod", "javascript", "python", "c++", "c#"],
-                reply: "Programiranje je zakon! Kroz kodiranje u JavaScript-u, Python-u, C++ i C# možeš praviti neverovatne igrice, veb-sajtove i aplikacije poput ove."
+                keywords: ["programiranje", "kod", "javascript", "python", "c++", "c#", "coding", "code"],
+                reply: "Programiranje omogućava pravljenje neverovatnih igrica, veb-sajtova i aplikacija poput ove!"
             },
             {
-                keywords: ["istorija", "1 svetski rat", "prvi svetski rat", "1914"],
+                keywords: ["istorija", "1 svetski rat", "prvi svetski rat", "1914", "history", "world war"],
                 reply: "Prvi svetski rat je zvanično počeo 28. jula 1914. godine kada je Austrougarska objavila rat Kraljevini Srbiji."
             },
             {
@@ -231,16 +218,20 @@
                 reply: "Drugi svetski rat je trajao od 1939. do 1945. godine. Adolf Hitler je bio vođa nacističke Nemačke a preminuo je 30. aprila 1945."
             },
             {
-                keywords: ["roblox", "studio", "lua", "igrica"],
-                reg: "Roblox Studio koristi Lua programski jezik za pravljenje skripti i igrica. Platforma ima milione aktivnih igrača i sjajna je za razvoj."
+                keywords: ["isus", "hrist", "jesus", "christ", "religija", "religion"],
+                reply: "Isus Hrist je centralna ličnost hrišćanstva. U istoriji i hrišćanskoj tradiciji on predstavlja Spasitelja čovečanstva."
             },
             {
-                keywords: ["auto", "automobil", "koenigsegg", "audi", "rs6", "bmw", "turbo"],
-                reply: "Automobili su vrhunska mašinerija! Visokoformansna vozila poput Koenigsegg Jesko Absolut-a, Audi RS6-ice ili tjuniranih BMW-a sa turbo punjačima imaju neverovatne performanse."
+                keywords: ["zamenica", "zamenice", "gramatika", "grammar", "pronouns"],
+                reply: "Lične zamenice u srpskom jeziku služe da zamene imena lica. Imamo lične zamenice za prvo, drugo i treće lice (ja, ti, on, ona, ono, mi, vi, oni...)."
             },
             {
-                keywords: ["ko si ti", "šta si ti", "creator", "tvorac"],
-                reply: "Ja sam Righty AI, tvoj napredni veb asistent kojeg je kreirao xXItzVortexXx. Tu sam da ti pomognem u radu, kodiranju i odgovaranju na pitanja."
+                keywords: ["roblox", "studio", "lua", "igrica", "game"],
+                reply: "Roblox Studio koristi Lua programski jezik za pravljenje skripti i igrica. Platforma ima milione aktivnih igrača."
+            },
+            {
+                keywords: ["ko si ti", "šta si ti", "creator", "tvorac", "who are you"],
+                reply: "Ja sam Righty AI, tvoj napredni veb asistent kojeg je kreirao xXItzVortexXx. Tu sam da ti pomognem u radu i kodiranju."
             }
         ];
 
@@ -252,84 +243,4 @@
 
         function sendMessage() {
             const inputField = document.getElementById("user-input");
-            const userText = inputField.value.trim();
-            if (userText === "") return;
-
-            // Dodaj korisnikovu poruku
-            appendMessage(userText, "user-message");
-            inputField.value = "";
-
-            // Obrada bota nakon kratke pauze da deluje realnije
-            setTimeout(() => {
-                const botReply = generateSmartResponse(userText);
-                appendMessage(botReply, "bot-message");
-            }, 300);
-        }
-
-        function generateSmartResponse(message) {
-            const cleanMsg = message.toLowerCase();
-
-            // 1. Provera za matematiku (ako ima brojeva i računanja)
-            if (/\d/.test(cleanMsg) && (/[+\-*/]/.test(cleanMsg) || cleanMsg.includes("plus") || cleanMsg.includes("puta"))) {
-                try {
-                    let calcResult = eval(cleanMsg.replace(/[^0-9+\-*/().]/g, ''));
-                    return `Evo rešenja: **${message} = ${calcResult}** 🧮✨`;
-                } catch (e) {
-                    return "Greška u matematičkom izrazu. Proveri unete vrednosti!";
-                }
-            }
-
-            // 2. Pretraga kroz veliku bazu znanja
-            for (let item of massiveKnowledgeBase) {
-                for (let keyword of item.keywords) {
-                    if (cleanMsg.includes(keyword)) {
-                        return item.reply;
-                    }
-                }
-            }
-
-            // 3. Automatski pametni fallback odgovor (bez "šefovanja")
-            return `Razumeo sam poruku: "${message}". Trenutno nemam ubačenu tu specifičnu informaciju u bazi, ali sistem nastavlja da uči i napreduje svakog dana! 💻🚀`;
-        }
-
-        function appendMessage(text, className) {
-            const chatContainer = document.getElementById("chat-container");
-            const msgDiv = document.createElement("div");
-            msgDiv.className = `message ${className}`;
-            msgDiv.innerHTML = text;
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function startNewChat() {
-            const chatContainer = document.getElementById("chat-container");
-            chatContainer.innerHTML = `<div class="message bot-message">New session started. How can I help you today?</div>`;
-        }
-
-        function clearHistory() {
-            const chatContainer = document.getElementById("chat-container");
-            chatContainer.innerHTML = `<div class="message bot-message">Chat history cleared.</div>`;
-        }
-
-        // ==========================================================
-        // DOKUMENTACIJA I POMOĆNE FUNKCIJE SISTEMA (Simulacija velikog koda)
-        // ==========================================================
-        function _systemInitModule_01() { console.log("Righty AI Core Engine v2.4 initialized successfully."); }
-        function _systemInitModule_02() { console.log("DOM bindings and event listeners mounted."); }
-        function _systemInitModule_03() { console.log("Local storage cache verified."); }
-        function _systemInitModule_04() { console.log("Security sandbox enabled."); }
-        function _systemInitModule_05() { console.log("Network state: Offline / Standalone mode active."); }
-        function _systemInitModule_06() { console.log("Memory allocation optimal."); }
-        function _systemInitModule_07() { console.log("Garbage collector routine ready."); }
-        function _systemInitModule_08() { console.log("Thread pool size: 4 workers."); }
-        function _systemInitModule_09() { console.log("Encryption layer: SHA-256 local hash check passed."); }
-        function _systemInitModule_10() { console.log("All systems operational. Ready for user input."); }
-
-        // Pokretanje sistemskih modula u pozadini
-        _systemInitModule_01(); _systemInitModule_02(); _systemInitModule_03();
-        _systemInitModule_04(); _systemInitModule_05(); _systemInitModule_06();
-        _systemInitModule_07(); _systemInitModule_08(); _systemInitModule_09();
-        _systemInitModule_10();
-    </script>
-</body>
-</html>
+            const userText = inputField.
